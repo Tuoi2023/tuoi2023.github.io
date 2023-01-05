@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=0.4, maximum-scale=1.0, user-scalable=no">
+    <title>Happy BirthDay Tươi</title>
+    <link rel="shortcut icon" href="./assets/image/icon.svg">
+    <link rel="stylesheet" href="css/style1.css" type="text/css">
+</head>
+
+<p class="text" style="color: #ed3073;">
+    Vui lòng click chuột 2 lần để nghe nhạc!!!
+</p>
+
+<body>
+    <audio id="bgaudio" autoplay preload loop src="./assets/music/生日祝福歌.mp3" hidden="true"></audio>
+    <script src="js/play_music.js"></script>
+    <canvas class="canvas" width="1920" height="1080"></canvas>
+    <script src="js/show_date_time.js"></script>
+    <script src="js/render.js"></script>
+    <script src="js/color_bg_effect.js"></script>
+    <!-- <script src="js/click_effect.js"></script> -->
+    <!--鼠标点击爆炸五颜六色特效-->
+    <canvas class="fireworks" style="position:fixed;left:0;top:0;z-index:99999999;pointer-events:none;"></canvas>
+    <script src="js/anime.min.js"></script>
+    <script src="js/fireworks.js"></script>
+</body>
+
+</html>
