@@ -1,56 +1,55 @@
 var S = {
-    init: function () {
+    init: function() {
         S.Drawing.init('.canvas');
         document.body.classList.add('body--ready');
-        // 文字切换
-        S.UI.simulate("祝|老姐|SYN|10月28日|29|岁|生|日|快|乐|生日快乐|#countdown 3|Happy birthday|#time");
-        S.Drawing.loop(function () {
+        // S.UI.simulate("祝|老姐|SYN|10月28日|29|岁|生|日|快|乐|生日快乐|#countdown 3|Happy birthday|#time");
+        S.Drawing.loop(function() {
             S.Shape.render();
         });
     }
 };
 
 
-S.Drawing = (function () {
+S.Drawing = (function() {
     var canvas,
         context,
         renderFn,
         requestFrame = window.requestAnimationFrame ||
-            window.webkitRequestAnimationFrame ||
-            window.mozRequestAnimationFrame ||
-            window.oRequestAnimationFrame ||
-            window.msRequestAnimationFrame ||
-            function (callback) {
-                window.setTimeout(callback, 1000 / 60);
-            };
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+            window.setTimeout(callback, 1000 / 60);
+        };
 
     return {
-        init: function (el) {
+        init: function(el) {
             canvas = document.querySelector(el);
             context = canvas.getContext('2d');
             this.adjustCanvas();
 
-            window.addEventListener('resize', function (e) {
+            window.addEventListener('resize', function(e) {
                 S.Drawing.adjustCanvas();
             });
         },
-        loop: function (fn) {
+        loop: function(fn) {
             renderFn = !renderFn ? fn : renderFn;
             this.clearFrame();
             renderFn();
             requestFrame.call(window, this.loop.bind(this));
         },
-        adjustCanvas: function () {
+        adjustCanvas: function() {
             canvas.width = window.innerWidth - 100;
             canvas.height = window.innerHeight - 30;
         },
-        clearFrame: function () {
+        clearFrame: function() {
             context.clearRect(0, 0, canvas.width, canvas.height);
         },
-        getArea: function () {
+        getArea: function() {
             return { w: canvas.width, h: canvas.height };
         },
-        drawCircle: function (p, c) {
+        drawCircle: function(p, c) {
             context.fillStyle = c.render();
             context.beginPath();
             context.arc(p.x, p.y, p.z, 0, 2 * Math.PI, true);
@@ -61,7 +60,7 @@ S.Drawing = (function () {
 }());
 
 
-S.UI = (function () {
+S.UI = (function() {
     var interval,
         currentAction,
         time,
@@ -94,7 +93,7 @@ S.UI = (function () {
         fn(currentAction);
 
         if (!max || (!reverse && currentAction < max) || (reverse && currentAction > 0)) {
-            interval = setInterval(function () {
+            interval = setInterval(function() {
                 currentAction = reverse ? currentAction - 1 : currentAction + 1;
                 fn(currentAction);
 
@@ -110,9 +109,9 @@ S.UI = (function () {
             value,
             current;
 
-        sequence = typeof (value) === 'object' ? value : sequence.concat(value.split('|'));
+        sequence = typeof(value) === 'object' ? value : sequence.concat(value.split('|'));
 
-        timedAction(function (index) {
+        timedAction(function(index) {
             current = sequence.shift();
             action = getAction(current);
             value = getValue(current);
@@ -122,7 +121,7 @@ S.UI = (function () {
                     value = parseInt(value) || 10;
                     value = value > 0 ? value : 10;
 
-                    timedAction(function (index) {
+                    timedAction(function(index) {
                         if (index === 0) {
                             if (sequence.length === 0) {
                                 S.Shape.switchShape(S.ShapeBuilder.letter(''));
@@ -154,7 +153,7 @@ S.UI = (function () {
                     if (sequence.length > 0) {
                         S.Shape.switchShape(S.ShapeBuilder.letter(t));
                     } else {
-                        timedAction(function () {
+                        timedAction(function() {
                             t = formatTime(new Date());
                             if (t !== time) {
                                 time = t;
@@ -171,14 +170,14 @@ S.UI = (function () {
     }
 
     return {
-        simulate: function (action) {
+        simulate: function(action) {
             performAction(action);
         }
     };
 }());
 
 
-S.Point = function (args) {
+S.Point = function(args) {
     this.x = args.x;
     this.y = args.y;
     this.z = args.z;
@@ -187,7 +186,7 @@ S.Point = function (args) {
 };
 
 
-S.Color = function (r, g, b, a) {
+S.Color = function(r, g, b, a) {
     this.r = r;
     this.g = g;
     this.b = b;
@@ -195,13 +194,13 @@ S.Color = function (r, g, b, a) {
 };
 
 S.Color.prototype = {
-    render: function () {
+    render: function() {
         return 'rgba(' + this.r + ',' + +this.g + ',' + this.b + ',' + this.a + ')';
     }
 };
 
 
-S.Dot = function (x, y) {
+S.Dot = function(x, y) {
     this.p = new S.Point({
         x: x,
         y: y,
@@ -220,7 +219,7 @@ S.Dot = function (x, y) {
 };
 
 S.Dot.prototype = {
-    clone: function () {
+    clone: function() {
         return new S.Point({
             x: this.x,
             y: this.y,
@@ -229,11 +228,11 @@ S.Dot.prototype = {
             h: this.h
         });
     },
-    _draw: function () {
+    _draw: function() {
         this.c.a = this.p.a;
         S.Drawing.drawCircle(this.p, this.c);
     },
-    _moveTowards: function (n) {
+    _moveTowards: function(n) {
         var details = this.distanceTo(n, true),
             dx = details[0],
             dy = details[1],
@@ -258,7 +257,7 @@ S.Dot.prototype = {
 
         return false;
     },
-    _update: function () {
+    _update: function() {
         if (this._moveTowards(this.t)) {
             var p = this.q.shift();
 
@@ -286,26 +285,26 @@ S.Dot.prototype = {
         d = this.p.z - this.t.z;
         this.p.z = Math.max(1, this.p.z - (d * 0.05));
     },
-    distanceTo: function (n, details) {
+    distanceTo: function(n, details) {
         var dx = this.p.x - n.x,
             dy = this.p.y - n.y,
             d = Math.sqrt(dx * dx + dy * dy);
 
         return details ? [dx, dy, d] : d;
     },
-    move: function (p, avoidStatic) {
+    move: function(p, avoidStatic) {
         if (!avoidStatic || (avoidStatic && this.distanceTo(p) > 1)) {
             this.q.push(p);
         }
     },
-    render: function () {
+    render: function() {
         this._update();
         this._draw();
     }
 };
 
 
-S.ShapeBuilder = (function () {
+S.ShapeBuilder = (function() {
     var gap = 13,
         shapeCanvas = document.createElement('canvas'),
         shapeContext = shapeCanvas.getContext('2d'),
@@ -373,23 +372,23 @@ S.ShapeBuilder = (function () {
     init();
 
     return {
-        imageFile: function (url, callback) {
+        imageFile: function(url, callback) {
             var image = new Image(),
                 a = S.Drawing.getArea();
 
-            image.onload = function () {
+            image.onload = function() {
                 shapeContext.clearRect(0, 0, shapeCanvas.width, shapeCanvas.height);
                 shapeContext.drawImage(this, 0, 0, a.h * 0.6, a.h * 0.6);
                 callback(processCanvas());
             };
 
-            image.onerror = function () {
+            image.onerror = function() {
                 callback(S.ShapeBuilder.letter('What?'));
             };
 
             image.src = url;
         },
-        circle: function (d) {
+        circle: function(d) {
             var r = Math.max(0, d) / 2;
             shapeContext.clearRect(0, 0, shapeCanvas.width, shapeCanvas.height);
             shapeContext.beginPath();
@@ -399,7 +398,7 @@ S.ShapeBuilder = (function () {
 
             return processCanvas();
         },
-        letter: function (l) {
+        letter: function(l) {
             var s = 0;
 
             setFontSize(fontSize);
@@ -413,7 +412,7 @@ S.ShapeBuilder = (function () {
 
             return processCanvas();
         },
-        rectangle: function (w, h) {
+        rectangle: function(w, h) {
             var dots = [],
                 width = gap * w,
                 height = gap * h;
@@ -433,7 +432,7 @@ S.ShapeBuilder = (function () {
 }());
 
 
-S.Shape = (function () {
+S.Shape = (function() {
     var dots = [],
         width = 0,
         height = 0,
@@ -448,7 +447,7 @@ S.Shape = (function () {
     }
 
     return {
-        shuffleIdle: function () {
+        shuffleIdle: function() {
             var a = S.Drawing.getArea();
 
             for (var d = 0; d < dots.length; d++) {
@@ -460,7 +459,7 @@ S.Shape = (function () {
                 }
             }
         },
-        switchShape: function (n, fast) {
+        switchShape: function(n, fast) {
             var size,
                 a = S.Drawing.getArea();
 
@@ -529,7 +528,7 @@ S.Shape = (function () {
                 }
             }
         },
-        render: function () {
+        render: function() {
             for (var d = 0; d < dots.length; d++) {
                 dots[d].render();
             }
